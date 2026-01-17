@@ -64,6 +64,12 @@ public class RecordsModel : PageModel
                 nextDueDate = lastRecord.PerformedAt.Date.Add(chore.Frequency);
             }
 
+            // Move to next Saturday if not already on the due date
+            int daysUntilSaturday = (int)(DayOfWeek.Saturday - nextDueDate.DayOfWeek);
+            if (daysUntilSaturday < 0)
+                daysUntilSaturday += 7;
+            nextDueDate = nextDueDate.AddDays(daysUntilSaturday);
+
             var daysUntilDue = (int)(nextDueDate - today).TotalDays;
             var isOverdue = daysUntilDue < 0;
 
