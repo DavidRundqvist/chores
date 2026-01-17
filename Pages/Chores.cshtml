@@ -1,0 +1,79 @@
+@page
+@model ChoresModel
+@{
+    ViewData["Title"] = "Manage Chores";
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Add New Chore</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="newName" class="form-label">Chore Name</label>
+                        <input type="text" class="form-control" id="newName" name="newName" placeholder="e.g., Clean the gutters" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="newDays" class="form-label">Frequency (days)</label>
+                        <input type="number" class="form-control" id="newDays" name="newDays" placeholder="e.g., 30" min="1" required />
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">Add Chore</button>
+                    </div>
+                </div>
+            </form>
+            @if (!ModelState.IsValid)
+            {
+                <div class="alert alert-danger mt-3">
+                    @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.Chores.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Frequency</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var chore in Model.Chores)
+                    {
+                        <tr>
+                            <td>@chore.Name</td>
+                            <td>@chore.Frequency.TotalDays days</td>
+                            <td>
+                                <form method="post" style="display:inline;">
+                                    <input type="hidden" name="choreIndex" value="@Model.Chores.IndexOf(chore)" />
+                                    <button type="submit" class="btn btn-sm btn-danger" formaction="?handler=Delete" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No chores yet. Add one to get started!
+        </div>
+    }
+</div>

@@ -1,0 +1,18 @@
+[
+  {
+    "Name": "V\u00E4rmepumpsfiltret",
+    "Frequency": "30.00:00:00"
+  },
+  {
+    "Name": "K\u00F6ksfl\u00E4kten",
+    "Frequency": "30.00:00:00"
+  },
+  {
+    "Name": "Golvbrunnen badrum uppe",
+    "Frequency": "60.00:00:00"
+  },
+  {
+    "Name": "Golvbrunnen badrum nere",
+    "Frequency": "60.00:00:00"
+  }
+]
