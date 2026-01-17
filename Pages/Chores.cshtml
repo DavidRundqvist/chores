@@ -30,10 +30,7 @@
                         <tbody>
                             @foreach (var choreWithDue in Model.UpcomingChores)
                             {
-                                var rowClass = choreWithDue.IsOverdue ? "table-danger" : 
-                                               choreWithDue.DaysUntilDue <= 0 ? "table-warning" : "";
-                                
-                                <tr class="@rowClass">
+                                <tr>
                                     <td>@choreWithDue.Chore.Name</td>
                                     <td>@choreWithDue.Chore.Frequency.TotalDays days</td>
                                     <td>
