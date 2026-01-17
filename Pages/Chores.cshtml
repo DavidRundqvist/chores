@@ -1,4 +1,4 @@
-@page
+@page "/"
 @model ChoresModel
 @{
     ViewData["Title"] = "Chores";
@@ -10,7 +10,7 @@
     <!-- Upcoming Chores Section -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5>Upcoming Chores</h5>
+            <h5>Upcoming</h5>
         </div>
         <div class="card-body">
             @if (Model.UpcomingChores.Any())
@@ -73,7 +73,7 @@
             else
             {
                 <div class="alert alert-info" role="alert">
-                    No chores. Add some chores first!
+                    Add some chores.
                 </div>
             }
         </div>
@@ -82,7 +82,7 @@
     <!-- Completed Chores Section -->
     <div class="card">
         <div class="card-header">
-            <h5>Completed Chores</h5>
+            <h5>Completed</h5>
         </div>
         <div class="card-body">
             @if (Model.AllRecords.Any())
