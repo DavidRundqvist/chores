@@ -7,7 +7,7 @@ namespace chores.Pages;
 
 public class ChoresModel : PageModel
 {
-    private readonly FileRepository _repository;
+    private readonly ChoreRepository _repository;
     
     public List<Chore> Chores { get; set; } = [];
     public Guid? EditingId { get; set; }
@@ -15,7 +15,7 @@ public class ChoresModel : PageModel
     public ChoresModel()
     {
         var choreFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "chores.json");
-        _repository = new FileRepository(choreFilePath);
+        _repository = new ChoreRepository(choreFilePath);
     }
 
     public async Task OnGetAsync(Guid? editingId = null)

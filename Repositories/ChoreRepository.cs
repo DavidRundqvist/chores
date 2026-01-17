@@ -3,11 +3,11 @@ using Chores.Models;
 
 namespace Chores.Repositories;
 
-public class FileRepository
+public class ChoreRepository
 {
     private readonly string _filePath;
 
-    public FileRepository(string filePath)
+    public ChoreRepository(string filePath)
     {
         _filePath = filePath;
     }
