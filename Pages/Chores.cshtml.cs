@@ -5,92 +5,111 @@ using Chores.Repositories;
 
 namespace chores.Pages;
 
+public class ChoreWithNextDue
+{
+    public Chore Chore { get; set; } = null!;
+    public DateTime? LastPerformed { get; set; }
+    public DateTime NextDueDate { get; set; }
+    public int DaysUntilDue { get; set; }
+    public bool IsOverdue { get; set; }
+}
+
 public class ChoresModel : PageModel
 {
-    private readonly ChoreRepository _repository;
+    private readonly ChoreRepository _choreRepository;
+    private readonly RecordRepository _recordRepository;
     
     public List<Chore> Chores { get; set; } = [];
-    public Guid? EditingId { get; set; }
+    public List<Record> AllRecords { get; set; } = [];
+    public List<ChoreWithNextDue> UpcomingChores { get; set; } = [];
 
     public ChoresModel()
     {
         var choreFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "chores.json");
-        _repository = new ChoreRepository(choreFilePath);
+        var recordFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "records.json");
+        _choreRepository = new ChoreRepository(choreFilePath);
+        _recordRepository = new RecordRepository(recordFilePath);
     }
 
-    public async Task OnGetAsync(Guid? editingId = null)
+    public async Task OnGetAsync()
     {
-        var chores = await _repository.LoadAsync();
+        var chores = await _choreRepository.LoadAsync();
         Chores = chores.ToList();
-        EditingId = editingId;
+        
+        var records = await _recordRepository.LoadAsync();
+        AllRecords = records.ToList();
+
+        CalculateUpcomingChores();
     }
 
-    public async Task<IActionResult> OnPostAsync(string newName, int newDays)
+    private void CalculateUpcomingChores()
     {
-        if (string.IsNullOrWhiteSpace(newName) || newDays <= 0)
+        var today = DateTime.Now.Date;
+        
+        UpcomingChores = Chores.Select(chore =>
         {
-            ModelState.AddModelError("", "Invalid chore name or frequency");
+            var lastRecord = AllRecords
+                .Where(r => r.ChoreId == chore.Id)
+                .OrderByDescending(r => r.PerformedAt)
+                .FirstOrDefault();
+
+            DateTime nextDueDate;
+            if (lastRecord == null)
+            {
+                // Never been performed - due today
+                nextDueDate = today;
+            }
+            else
+            {
+                nextDueDate = lastRecord.PerformedAt.Date.Add(chore.Frequency);
+            }
+
+            // Move to next Saturday if not already on the due date
+            int daysUntilSaturday = (int)(DayOfWeek.Saturday - nextDueDate.DayOfWeek);
+            if (daysUntilSaturday < 0)
+                daysUntilSaturday += 7;
+            nextDueDate = nextDueDate.AddDays(daysUntilSaturday);
+
+            var daysUntilDue = (int)(nextDueDate - today).TotalDays;
+            var isOverdue = daysUntilDue < 0;
+
+            return new ChoreWithNextDue
+            {
+                Chore = chore,
+                LastPerformed = lastRecord?.PerformedAt,
+                NextDueDate = nextDueDate,
+                DaysUntilDue = daysUntilDue,
+                IsOverdue = isOverdue
+            };
+        })
+        .OrderBy(c => c.NextDueDate)
+        .ToList();
+    }
+
+    public async Task<IActionResult> OnPostDoneAsync(Guid choreId)
+    {
+        var chores = await _choreRepository.LoadAsync();
+        var chore = chores.FirstOrDefault(c => c.Id == choreId);
+
+        if (chore == null)
+        {
+            ModelState.AddModelError("", "Chore not found");
             await OnGetAsync();
             return Page();
         }
 
-        var chores = await _repository.LoadAsync();
-        var newChore = new Chore
+        var record = new Record
         {
             Id = Guid.NewGuid(),
-            Name = newName.Trim(),
-            Frequency = TimeSpan.FromDays(newDays)
+            ChoreId = choreId,
+            PerformedAt = DateTime.Now
         };
 
-        var choresList = chores.ToList();
-        choresList.Add(newChore);
-        await _repository.SaveAsync(choresList.ToArray());
+        var records = await _recordRepository.LoadAsync();
+        var recordsList = records.ToList();
+        recordsList.Add(record);
 
-        return RedirectToPage();
-    }
-
-    public async Task<IActionResult> OnPostEditAsync(Guid choreId, string editName, int editDays)
-    {
-        if (string.IsNullOrWhiteSpace(editName) || editDays <= 0)
-        {
-            ModelState.AddModelError("", "Invalid chore name or frequency");
-            await OnGetAsync(choreId);
-            return Page();
-        }
-
-        var chores = await _repository.LoadAsync();
-        var chore = chores.FirstOrDefault(c => c.Id == choreId);
-        
-        if (chore == null)
-        {
-            ModelState.AddModelError("", "Chore not found");
-            await OnGetAsync();
-            return Page();
-        }
-
-        chore.Name = editName.Trim();
-        chore.Frequency = TimeSpan.FromDays(editDays);
-        
-        await _repository.SaveAsync(chores);
-
-        return RedirectToPage();
-    }
-
-    public async Task<IActionResult> OnPostDeleteAsync(Guid choreId)
-    {
-        var chores = await _repository.LoadAsync();
-        var chore = chores.FirstOrDefault(c => c.Id == choreId);
-        
-        if (chore == null)
-        {
-            ModelState.AddModelError("", "Chore not found");
-            await OnGetAsync();
-            return Page();
-        }
-
-        var choresList = chores.ToList();
-        choresList.Remove(chore);
-        await _repository.SaveAsync(choresList.ToArray());
+        await _recordRepository.SaveAsync(recordsList.ToArray());
 
         return RedirectToPage();
     }
