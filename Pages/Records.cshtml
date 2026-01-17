@@ -39,14 +39,14 @@
                                     <td>
                                         @if (choreWithDue.LastPerformed.HasValue)
                                         {
-                                            @choreWithDue.LastPerformed.Value.ToString("g")
+                                            @choreWithDue.LastPerformed.Value.ToString("yyyy-MM-dd, HH:mm")
                                         }
                                         else
                                         {
                                             <em>Never</em>
                                         }
                                     </td>
-                                    <td>@choreWithDue.NextDueDate:d</td>
+                                    <td>@choreWithDue.NextDueDate.ToString("yyyy-MM-dd")</td>
                                     <td>
                                         @if (choreWithDue.IsOverdue)
                                         {
@@ -104,7 +104,7 @@
                                 var chore = Model.Chores.FirstOrDefault(c => c.Id == record.ChoreId);
                                 <tr>
                                     <td>@chore?.Name</td>
-                                    <td>@record.PerformedAt:g</td>
+                                    <td>@record.PerformedAt.ToString("yyyy-MM-dd, HH:mm")</td>
                                 </tr>
                             }
                         </tbody>
