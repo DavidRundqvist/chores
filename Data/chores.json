@@ -1,17 +1,16 @@
 [
   {
-    "Name": "V\u00E4rmepumpsfiltret",
+    "Id": "6fb48dcb-4773-4ad6-8894-bef6d0e7ff3a",
+    "Name": "Reng\u00F6r v\u00E4rmepumpsfiltret",
     "Frequency": "30.00:00:00"
   },
   {
-    "Name": "K\u00F6ksfl\u00E4kten",
-    "Frequency": "30.00:00:00"
-  },
-  {
-    "Name": "Golvbrunnen badrum uppe",
+    "Id": "365e07c5-f6d6-48c3-a03d-b6156299cff5",
+    "Name": "Golvbrunnen uppe",
     "Frequency": "60.00:00:00"
   },
   {
+    "Id": "9edbc9e1-1bab-4beb-8fe1-14105cd7ca9c",
     "Name": "Golvbrunnen badrum nere",
     "Frequency": "60.00:00:00"
   }

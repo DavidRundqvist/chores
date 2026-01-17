@@ -55,8 +55,7 @@
                 <tbody>
                     @foreach (var chore in Model.Chores)
                     {
-                        var choreIndex = Model.Chores.IndexOf(chore);
-                        var isEditing = Model.EditingIndex == choreIndex;
+                        var isEditing = Model.EditingId == chore.Id;
                         
                         <tr>
                             @if (isEditing)
@@ -69,12 +68,12 @@
                                 </td>
                                 <td>
                                     <form method="post" style="display:inline;">
-                                        <input type="hidden" name="choreIndex" value="@choreIndex" />
+                                        <input type="hidden" name="choreId" value="@chore.Id" />
                                         <input type="hidden" name="editName" value="@chore.Name" />
                                         <input type="hidden" name="editDays" value="@((int)chore.Frequency.TotalDays)" />
                                         <button type="submit" class="btn btn-sm btn-success" formaction="?handler=Edit">Save</button>
                                     </form>
-                                    <a href="?editingIndex=-1" class="btn btn-sm btn-secondary">Cancel</a>
+                                    <a href="?editingId=" class="btn btn-sm btn-secondary">Cancel</a>
                                 </td>
                             }
                             else
@@ -82,9 +81,9 @@
                                 <td>@chore.Name</td>
                                 <td>@chore.Frequency.TotalDays days</td>
                                 <td>
-                                    <a href="?editingIndex=@choreIndex" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="?editingId=@chore.Id" class="btn btn-sm btn-warning">Edit</a>
                                     <form method="post" style="display:inline;">
-                                        <input type="hidden" name="choreIndex" value="@choreIndex" />
+                                        <input type="hidden" name="choreId" value="@chore.Id" />
                                         <button type="submit" class="btn btn-sm btn-danger" formaction="?handler=Delete" onclick="return confirm('Are you sure?')">Delete</button>
                                     </form>
                                 </td>

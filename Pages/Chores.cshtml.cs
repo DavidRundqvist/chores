@@ -10,6 +10,7 @@ public class ChoresModel : PageModel
     private readonly FileRepository _repository;
     
     public List<Chore> Chores { get; set; } = [];
+    public Guid? EditingId { get; set; }
 
     public ChoresModel()
     {
@@ -17,10 +18,11 @@ public class ChoresModel : PageModel
         _repository = new FileRepository(choreFilePath);
     }
 
-    public async Task OnGetAsync()
+    public async Task OnGetAsync(Guid? editingId = null)
     {
         var chores = await _repository.LoadAsync();
         Chores = chores.ToList();
+        EditingId = editingId;
     }
 
     public async Task<IActionResult> OnPostAsync(string newName, int newDays)
@@ -35,6 +37,7 @@ public class ChoresModel : PageModel
         var chores = await _repository.LoadAsync();
         var newChore = new Chore
         {
+            Id = Guid.NewGuid(),
             Name = newName.Trim(),
             Frequency = TimeSpan.FromDays(newDays)
         };
@@ -46,22 +49,52 @@ public class ChoresModel : PageModel
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostDeleteAsync(int choreIndex)
+    public async Task<IActionResult> OnPostEditAsync(Guid choreId, string editName, int editDays)
+    {
+        if (string.IsNullOrWhiteSpace(editName) || editDays <= 0)
+        {
+            ModelState.AddModelError("", "Invalid chore name or frequency");
+            await OnGetAsync(choreId);
+            return Page();
+        }
+
+        var chores = await _repository.LoadAsync();
+        var chore = chores.FirstOrDefault(c => c.Id == choreId);
+        
+        if (chore == null)
+        {
+            ModelState.AddModelError("", "Chore not found");
+            await OnGetAsync();
+            return Page();
+        }
+
+        chore.Name = editName.Trim();
+        chore.Frequency = TimeSpan.FromDays(editDays);
+        
+        await _repository.SaveAsync(chores);
+
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostDeleteAsync(Guid choreId)
     {
         var chores = await _repository.LoadAsync();
+        var chore = chores.FirstOrDefault(c => c.Id == choreId);
         
-        if (choreIndex < 0 || choreIndex >= chores.Length)
+        if (chore == null)
         {
-            ModelState.AddModelError("", "Invalid chore");
+            ModelState.AddModelError("", "Chore not found");
             await OnGetAsync();
             return Page();
         }
 
         var choresList = chores.ToList();
-        choresList.RemoveAt(choreIndex);
+        choresList.Remove(chore);
         await _repository.SaveAsync(choresList.ToArray());
 
         return RedirectToPage();
     }
 }
+
+
 
