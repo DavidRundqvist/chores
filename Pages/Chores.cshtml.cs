@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chores.Models;
 using Chores.Repositories;
+using Chores.Utilities;
 
 namespace chores.Pages;
 
@@ -48,27 +49,12 @@ public class ChoresModel : PageModel
         
         UpcomingChores = Chores.Select(chore =>
         {
+            var nextDueDate = DueChoreCalculator.CalculateNextDueDate(chore, AllRecords, today);
+
             var lastRecord = AllRecords
                 .Where(r => r.ChoreId == chore.Id)
                 .OrderByDescending(r => r.PerformedAt)
                 .FirstOrDefault();
-
-            DateTime nextDueDate;
-            if (lastRecord == null)
-            {
-                // Never been performed - due today
-                nextDueDate = today;
-            }
-            else
-            {
-                nextDueDate = lastRecord.PerformedAt.Date.Add(chore.Frequency);
-            }
-
-            // Move to next Saturday if not already on the due date
-            int daysUntilSaturday = (int)(DayOfWeek.Saturday - nextDueDate.DayOfWeek);
-            if (daysUntilSaturday < 0)
-                daysUntilSaturday += 7;
-            nextDueDate = nextDueDate.AddDays(daysUntilSaturday);
 
             var daysUntilDue = (int)(nextDueDate - today).TotalDays;
             var isOverdue = daysUntilDue < 0;
