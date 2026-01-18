@@ -19,7 +19,7 @@ echo "🚀 Starting deployment to $REMOTE_HOST..."
 # Step 1: Copy files to remote host and create data directory
 echo "📁 Copying files to remote host..."
 $SSH_CMD "$REMOTE_USER@$REMOTE_HOST" "mkdir -p $REMOTE_PATH $REMOTE_DATA_PATH"
-rsync -av -e "ssh $SSH_OPTS" --exclude='bin' --exclude='obj' --exclude='.vs' --exclude='*.dll' --exclude='*.pdb' . "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/"
+rsync -av -e "ssh $SSH_OPTS" --delete --exclude='bin' --exclude='.git' --exclude='.gitignore' --exclude='.vscode' --exclude='obj' --exclude='.vs' --exclude='*.dll' --exclude='*.pdb' . "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/"
 
 if [ $? -ne 0 ]; then
     echo "❌ Failed to copy files"
