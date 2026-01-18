@@ -60,21 +60,19 @@
                         <tr>
                             @if (isEditing)
                             {
-                                <td>
-                                    <input type="text" class="form-control form-control-sm" value="@chore.Name" name="editName" />
-                                </td>
-                                <td>
-                                    <input type="number" class="form-control form-control-sm" value="@((int)chore.Frequency.TotalDays)" name="editDays" min="1" />
-                                </td>
-                                <td>
-                                    <form method="post" style="display:inline;">
-                                        <input type="hidden" name="choreId" value="@chore.Id" />
-                                        <input type="hidden" name="editName" value="@chore.Name" />
-                                        <input type="hidden" name="editDays" value="@((int)chore.Frequency.TotalDays)" />
+                                <form method="post" style="display:inline;">
+                                    <input type="hidden" name="choreId" value="@chore.Id" />
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" value="@chore.Name" name="editName" />
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm" value="@((int)chore.Frequency.TotalDays)" name="editDays" min="1" />
+                                    </td>
+                                    <td>
                                         <button type="submit" class="btn btn-sm btn-success" formaction="?handler=Edit">Save</button>
-                                    </form>
-                                    <a href="?editingId=" class="btn btn-sm btn-secondary">Cancel</a>
-                                </td>
+                                        <a href="?editingId=" class="btn btn-sm btn-secondary">Cancel</a>
+                                    </td>
+                                </form>
                             }
                             else
                             {
