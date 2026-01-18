@@ -21,7 +21,7 @@ public class ManageChoresModel : PageModel
     public async Task OnGetAsync(Guid? editingId = null)
     {
         var chores = await _repository.LoadAsync();
-        Chores = chores.ToList();
+        Chores = chores.OrderBy(c => c.Name).ToList();
         EditingId = editingId;
     }
 

@@ -1,17 +1,87 @@
 [
   {
-    "Id": "6fb48dcb-4773-4ad6-8894-bef6d0e7ff3a",
-    "Name": "Reng\u00F6r v\u00E4rmepumpsfiltret",
-    "Frequency": "30.00:00:00"
+    "Id": "14e0d252-8d3c-4f8e-b504-188af4091cdb",
+    "Name": "Golvbrunnen badrum nere",
+    "Frequency": "60.00:00:00"
   },
   {
-    "Id": "365e07c5-f6d6-48c3-a03d-b6156299cff5",
+    "Id": "c9fdfc05-c3c0-4e56-9ef6-bf80b1de1c29",
     "Name": "Golvbrunnen badrum uppe",
     "Frequency": "60.00:00:00"
   },
   {
-    "Id": "9edbc9e1-1bab-4beb-8fe1-14105cd7ca9c",
-    "Name": "Golvbrunnen badrum nere",
+    "Id": "be2fb8c0-4c90-4619-a3d0-319f0c8f592c",
+    "Name": "V\u00E4rmepumpsfiltret",
+    "Frequency": "30.00:00:00"
+  },
+  {
+    "Id": "9190bbbb-b5d5-4d89-821e-d6e2f95dca3c",
+    "Name": "K\u00F6ksfl\u00E4kten",
+    "Frequency": "30.00:00:00"
+  },
+  {
+    "Id": "d703a40c-e54b-4807-bc68-c8071fabf65a",
+    "Name": "Byt s\u00E4ngkl\u00E4der",
+    "Frequency": "30.00:00:00"
+  },
+  {
+    "Id": "fda0e9bc-aee9-430f-88e4-78ed9be07e89",
+    "Name": "Vattendunkarna",
+    "Frequency": "365.00:00:00"
+  },
+  {
+    "Id": "e93dbe42-698a-4782-9c79-ce265ffb9187",
+    "Name": "Reng\u00F6r kylsk\u00E5pet",
+    "Frequency": "90.00:00:00"
+  },
+  {
+    "Id": "ff1a0b2b-c4c4-4c7c-954d-0062b30e5595",
+    "Name": "Kontrollera kylens kondenskanal",
+    "Frequency": "30.00:00:00"
+  },
+  {
+    "Id": "7fabe757-fe87-4dfb-bed6-c931259e560c",
+    "Name": "Rensa h\u00E4ngr\u00E4nnorna",
+    "Frequency": "365.00:00:00"
+  },
+  {
+    "Id": "358edf00-3476-4634-bde8-b115c77ddc29",
+    "Name": "Kontrollera grunden",
+    "Frequency": "365.00:00:00"
+  },
+  {
+    "Id": "799476f4-4111-47f2-b693-5044e7531ef0",
+    "Name": "Tv\u00E4ttmaskin \u002B tumlare",
+    "Frequency": "180.00:00:00"
+  },
+  {
+    "Id": "c5752ee4-bbdc-40d2-b0e1-5c5c60b4c936",
+    "Name": "S\u00E5pa altan",
+    "Frequency": "365.00:00:00"
+  },
+  {
+    "Id": "28d30865-56ba-492b-8c0d-33d27bea2e80",
+    "Name": "Vattenl\u00E5s, k\u00F6ket",
+    "Frequency": "180.00:00:00"
+  },
+  {
+    "Id": "f4712369-9aa2-4d06-aa68-9391a61dc862",
+    "Name": "V\u00E4rmepump, Service?",
+    "Frequency": "1095.00:00:00"
+  },
+  {
+    "Id": "47d4cc2a-bde1-4fdf-9b49-4f95fe4d2372",
+    "Name": "Vattenl\u00E5s, badrum nere",
     "Frequency": "60.00:00:00"
+  },
+  {
+    "Id": "95e864a6-3213-442e-ab31-bd09f7de8b12",
+    "Name": "Vattenl\u00E5s, badrum uppe",
+    "Frequency": "60.00:00:00"
+  },
+  {
+    "Id": "259478ae-df31-4702-b789-25d7b015d7c6",
+    "Name": "Sotning av skorstenen",
+    "Frequency": "1095.00:00:00"
   }
 ]
