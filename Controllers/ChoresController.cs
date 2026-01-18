@@ -19,35 +19,41 @@ public class ChoresController : ControllerBase
         _choreRepository = new ChoreRepository(choreFilePath);
         _recordRepository = new RecordRepository(recordFilePath);
     }
+[HttpGet("due-today")]
+public async Task<ActionResult<object>> GetDueToday()
+{
+    var chores = await _choreRepository.LoadAsync();
+    var records = await _recordRepository.LoadAsync();
+    
+    var today = DateTime.Now.Date;
+    var dueChores = new List<DueChoreDto>();
 
-    [HttpGet("due-today")]
-    public async Task<ActionResult<List<DueChoreDto>>> GetDueToday()
+    foreach (var chore in chores)
     {
-        var chores = await _choreRepository.LoadAsync();
-        var records = await _recordRepository.LoadAsync();
-        
-        var today = DateTime.Now.Date;
-        var dueChores = new List<DueChoreDto>();
+        var nextDueDate = DueChoreCalculator.CalculateNextDueDate(chore, records, today);
 
-        foreach (var chore in chores)
+        // Include if due today or earlier (overdue)
+        if (nextDueDate <= today)
         {
-            var nextDueDate = DueChoreCalculator.CalculateNextDueDate(chore, records, today);
-
-            // Include if due today or earlier (overdue)
-            if (nextDueDate <= today)
+            dueChores.Add(new DueChoreDto
             {
-                dueChores.Add(new DueChoreDto
-                {
-                    Id = chore.Id,
-                    Name = chore.Name,
-                    NextDueDate = nextDueDate,
-                    IsOverdue = nextDueDate < today
-                });
-            }
+                Id = chore.Id,
+                Name = chore.Name,
+                NextDueDate = nextDueDate,
+                IsOverdue = nextDueDate < today
+            });
         }
-
-        return Ok(dueChores);
     }
+
+    // Wrap the array in an object for HA
+    var response = new
+    {
+        chores = dueChores
+    };
+
+    return Ok(response);
+}
+
 }
 
 public class DueChoreDto
