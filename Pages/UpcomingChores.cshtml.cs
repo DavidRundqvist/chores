@@ -15,7 +15,7 @@ public class ChoreWithNextDue
     public bool IsOverdue { get; set; }
 }
 
-public class ChoresModel : PageModel
+public class UpcomingChoresModel : PageModel
 {
     private readonly ChoreRepository _choreRepository;
     private readonly RecordRepository _recordRepository;
@@ -24,7 +24,7 @@ public class ChoresModel : PageModel
     public List<Record> AllRecords { get; set; } = [];
     public List<ChoreWithNextDue> UpcomingChores { get; set; } = [];
 
-    public ChoresModel()
+    public UpcomingChoresModel()
     {
         var choreFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "chores.json");
         var recordFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "records.json");

@@ -1,0 +1,39 @@
+@page 
+@model DoneChoresModel
+@{
+    ViewData["Title"] = "Chores history";
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+    
+    @if (Model.AllRecords.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Chore</th>
+                        <th>Performed At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var record in Model.AllRecords.OrderByDescending(r => r.PerformedAt))
+                    {
+                        var chore = Model.Chores.FirstOrDefault(c => c.Id == record.ChoreId);
+                        <tr>
+                            <td>@chore?.Name</td>
+                            <td>@record.PerformedAt.ToString("yyyy-MM-dd, HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No records yet.
+        </div>
+    }
+</div>
