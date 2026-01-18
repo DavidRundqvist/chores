@@ -1,0 +1,37 @@
+# -----------------------------
+# 1️⃣ REST sensor: fetches chores and counts them
+# -----------------------------
+- platform: rest
+  name: "Due Chores"
+  unique_id: due_chores_rest
+  resource: "http://192.168.0.205:5209/api/chores/due-today"
+  method: GET
+  scan_interval: 900
+  # State = number of chores
+  value_template: "{{ value_json.chores | length }}"
+  # Store the full array in an attribute
+  json_attributes:
+    - chores
+
+# -----------------------------
+# 2️⃣ Template sensor: formats details and names for dashboard
+# -----------------------------
+- platform: template
+  sensors:
+    due_chores_friendly:
+      unique_id: due_chores_friendly
+      friendly_name: "Due Chores (Detailed)"
+      value_template: "{{ states('sensor.due_chores_rest') }}"
+      attribute_templates:
+        chores_list: >
+          {% set chores = state_attr('sensor.due_chores_rest', 'chores') | default([], true) %}
+          {{ chores | map(attribute='name') | join(', ') }}
+
+        chore_details: >
+          {% set chores = state_attr('sensor.due_chores_rest', 'chores') | default([], true) %}
+          {% for chore in chores %}
+          - {{ chore.name }}
+            {% if chore.isOverdue %}⚠️ OVERDUE{% endif %}
+            (due {{ chore.nextDueDate | as_timestamp | timestamp_custom('%Y-%m-%d') }})
+          {% endfor %}
+
