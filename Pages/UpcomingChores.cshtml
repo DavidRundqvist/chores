@@ -15,10 +15,8 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Chore</th>
-                        <th>Frequency</th>
-                        <th>Last Performed</th>
-                        <th>Due Date</th>
-                        <th>Days Until Due</th>
+                        <th>Due</th>
+                        <th>Days</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -27,32 +25,18 @@
                     {
                         <tr>
                             <td>@choreWithDue.Chore.Name</td>
-                            <td>@choreWithDue.Chore.Frequency.TotalDays days</td>
+                            <td class="text-nowrap">@choreWithDue.NextDueDate.ToString("yyyy-MM-dd")</td>
                             <td>
-                                @if (choreWithDue.LastPerformed.HasValue)
-                                {
-                                    @choreWithDue.LastPerformed.Value.ToString("yyyy-MM-dd, HH:mm")
+                                @if(choreWithDue.DaysUntilDue > 0) {
+                                    <span class="badge bg-secondary">@choreWithDue.DaysUntilDue</span>
                                 }
-                                else
-                                {
-                                    <em>Never</em>
+                                else if (choreWithDue.DaysUntilDue == 0) {
+                                    <span class="badge bg-warning">@choreWithDue.DaysUntilDue</span>
                                 }
-                            </td>
-                            <td>@choreWithDue.NextDueDate.ToString("yyyy-MM-dd")</td>
-                            <td>
-                                @if (choreWithDue.IsOverdue)
-                                {
-                                    <span class="badge bg-danger">@Math.Abs(choreWithDue.DaysUntilDue) days overdue</span>
+                                else {
+                                    <span class="badge bg-danger">@choreWithDue.DaysUntilDue</span>
                                 }
-                                else if (choreWithDue.DaysUntilDue <= 0)
-                                {
-                                    <span class="badge bg-warning">Due today</span>
-                                }
-                                else
-                                {
-                                    <span>@choreWithDue.DaysUntilDue days</span>
-                                }
-                            </td>
+                            </td>                                
                             <td>
                                 <form method="post" style="display:inline;">
                                     <input type="hidden" name="choreId" value="@choreWithDue.Chore.Id" />
