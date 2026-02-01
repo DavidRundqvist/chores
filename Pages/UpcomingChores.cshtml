@@ -23,6 +23,7 @@
                 <tbody>
                     @foreach (var choreWithDue in Model.UpcomingChores)
                     {
+                        <!-- Chore Row -->
                         <tr>
                             <td>@choreWithDue.Chore.Name</td>
                             <td class="text-nowrap">@choreWithDue.NextDueDate.ToString("yyyy-MM-dd")</td>
@@ -38,12 +39,35 @@
                                 }
                             </td>                                
                             <td>
-                                <form method="post" style="display:inline;">
-                                    <input type="hidden" name="choreId" value="@choreWithDue.Chore.Id" />
-                                    <button type="submit" class="btn btn-sm btn-success" formaction="?handler=Done">Done</button>
-                                </form>
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#doneModal-@choreWithDue.Chore.Id">Do</button>
                             </td>
                         </tr>
+
+                        <!-- Confirmation dialog -->
+                        <div class="modal fade" id="doneModal-@choreWithDue.Chore.Id" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">@choreWithDue.Chore.Name</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        Have you finished <strong>@choreWithDue.Chore.Name</strong>?                                                                            
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <form method="post">
+                                            <input type="hidden" name="choreId" value="@choreWithDue.Chore.Id" />
+                                            <button type="submit" class="btn btn-success" formaction="?handler=Done">Yes</button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     }
                 </tbody>
             </table>
