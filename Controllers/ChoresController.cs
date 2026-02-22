@@ -19,40 +19,74 @@ public class ChoresController : ControllerBase
         _choreRepository = new ChoreRepository(choreFilePath);
         _recordRepository = new RecordRepository(recordFilePath);
     }
-[HttpGet("due-today")]
-public async Task<ActionResult<object>> GetDueToday()
-{
-    var chores = await _choreRepository.LoadAsync();
-    var records = await _recordRepository.LoadAsync();
-    
-    var today = DateTime.Now.Date;
-    var dueChores = new List<DueChoreDto>();
 
-    foreach (var chore in chores)
+    [HttpGet("due-today")]
+    public async Task<ActionResult<object>> GetDueToday()
     {
-        var nextDueDate = DueChoreCalculator.CalculateNextDueDate(chore, records, today);
+        var chores = await _choreRepository.LoadAsync();
+        var records = await _recordRepository.LoadAsync();
 
-        // Include if due today or earlier (overdue)
-        if (nextDueDate <= today)
+        var today = DateTime.Now.Date;
+        var dueChores = new List<DueChoreDto>();
+
+        foreach (var chore in chores)
         {
-            dueChores.Add(new DueChoreDto
+            var nextDueDate = DueChoreCalculator.CalculateNextDueDate(chore, records, today);
+
+            // Include if due today or earlier (overdue)
+            if (nextDueDate <= today)
             {
-                Id = chore.Id,
-                Name = chore.Name,
-                NextDueDate = nextDueDate,
-                IsOverdue = nextDueDate < today
-            });
+                dueChores.Add(new DueChoreDto
+                {
+                    Id = chore.Id,
+                    Name = chore.Name,
+                    NextDueDate = nextDueDate,
+                    IsOverdue = nextDueDate < today
+                });
+            }
         }
+
+        // Wrap the array in an object for HA
+        var response = new {
+            chores = dueChores
+        };
+
+        return Ok(response);
     }
 
-    // Wrap the array in an object for HA
-    var response = new
+    [HttpGet("due-this-week")]
+    public async Task<ActionResult<object>> GetDueThisWeek()
     {
-        chores = dueChores
-    };
+        var chores = await _choreRepository.LoadAsync();
+        var records = await _recordRepository.LoadAsync();
 
-    return Ok(response);
-}
+        var weekFromNow = DateTime.Now.Date.AddDays(7);
+        var dueChores = new List<DueChoreDto>();
+
+        foreach (var chore in chores)
+        {
+            var nextDueDate = DueChoreCalculator.CalculateNextDueDate(chore, records, weekFromNow);
+
+            // Include if due within a week from now or earlier (overdue)
+            if (nextDueDate <= weekFromNow)
+            {
+                dueChores.Add(new DueChoreDto
+                {
+                    Id = chore.Id,
+                    Name = chore.Name,
+                    NextDueDate = nextDueDate,
+                    IsOverdue = nextDueDate < weekFromNow
+                });
+            }
+        }
+
+        // Wrap the array in an object for HA
+        var response = new {
+            chores = dueChores
+        };
+
+        return Ok(response);
+    }    
 
 }
 
