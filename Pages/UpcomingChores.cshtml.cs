@@ -97,6 +97,7 @@ public class UpcomingChoresModel : PageModel
 
         await _recordRepository.SaveAsync(recordsList.ToArray());
 
+        TempData["ShowConfetti"] = true;
         return RedirectToPage();
     }
 }

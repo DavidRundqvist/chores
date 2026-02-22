@@ -81,3 +81,9 @@
     }
 
 </div>
+
+@if (TempData["ShowConfetti"] is true) {
+    <script>
+        confetti({particleCount: 300,spread: 130,origin: { y: 0.5 }});
+    </script>
+}
