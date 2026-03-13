@@ -5,4 +5,5 @@ public class Chore
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = string.Empty;
     public TimeSpan Frequency { get; set; }
+    public string? Description { get; set; } // Optional description field
 }

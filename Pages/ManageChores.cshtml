@@ -55,38 +55,50 @@
                 <tbody>
                     @foreach (var chore in Model.Chores)
                     {
-                        var isEditing = Model.EditingId == chore.Id;
-                        
                         <tr>
-                            @if (isEditing)
-                            {
+                            <td>@chore.Name</td>
+                            <td>@chore.Frequency.TotalDays days</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal-@chore.Id">Edit</button>
                                 <form method="post" style="display:inline;">
                                     <input type="hidden" name="choreId" value="@chore.Id" />
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" value="@chore.Name" name="editName" />
-                                    </td>
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm" value="@((int)chore.Frequency.TotalDays)" name="editDays" min="1" />
-                                    </td>
-                                    <td>
-                                        <button type="submit" class="btn btn-sm btn-success" formaction="?handler=Edit">Save</button>
-                                        <a href="?editingId=" class="btn btn-sm btn-secondary">Cancel</a>
-                                    </td>
+                                    <button type="submit" class="btn btn-sm btn-danger" formaction="?handler=Delete" onclick="return confirm('Are you sure?')">Delete</button>
                                 </form>
-                            }
-                            else
-                            {
-                                <td>@chore.Name</td>
-                                <td>@chore.Frequency.TotalDays days</td>
-                                <td>
-                                    <a href="?editingId=@chore.Id" class="btn btn-sm btn-warning">Edit</a>
-                                    <form method="post" style="display:inline;">
-                                        <input type="hidden" name="choreId" value="@chore.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger" formaction="?handler=Delete" onclick="return confirm('Are you sure?')">Delete</button>
-                                    </form>
-                                </td>
-                            }
+                            </td>
                         </tr>
+
+                        <!-- Edit Modal -->
+                        <div class="modal fade" id="editModal-@chore.Id" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Edit Chore</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <form method="post">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="choreId" value="@chore.Id" />
+                                            <div class="mb-3">
+                                                <label for="editName-@chore.Id" class="form-label">Chore Name</label>
+                                                <input type="text" class="form-control" id="editName-@chore.Id" name="editName" value="@chore.Name" required />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editDays-@chore.Id" class="form-label">Frequency (days)</label>
+                                                <input type="number" class="form-control" id="editDays-@chore.Id" name="editDays" value="@((int)chore.Frequency.TotalDays)" min="1" required />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editDescription-@chore.Id" class="form-label">Description</label>
+                                                <textarea class="form-control" id="editDescription-@chore.Id" name="editDescription">@chore.Description</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary" formaction="?handler=Edit">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     }
                 </tbody>
             </table>

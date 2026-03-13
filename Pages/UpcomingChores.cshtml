@@ -25,7 +25,7 @@
                     {
                         <!-- Chore Row -->
                         <tr>
-                            <td>@choreWithDue.Chore.Name</td>
+                            <td title="@choreWithDue.Chore.Description">@choreWithDue.Chore.Name</td>
                             <td class="text-nowrap">@choreWithDue.NextDueDate.ToString("yyyy-MM-dd")</td>
                             <td>
                                 @if(choreWithDue.DaysUntilDue > 0) {
@@ -55,7 +55,11 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        Have you finished <strong>@choreWithDue.Chore.Name</strong>?                                                                            
+                                        @if (!string.IsNullOrWhiteSpace(choreWithDue.Chore.Description))
+                                        {
+                                            <p><em>@choreWithDue.Chore.Description</em></p>
+                                        }
+                                        <p>Have you finished <strong>@choreWithDue.Chore.Name</strong>?</p>
                                     </div>
 
                                     <div class="modal-footer">

@@ -10,7 +10,6 @@ public class ManageChoresModel : PageModel
     private readonly ChoreRepository _repository;
     
     public List<Chore> Chores { get; set; } = [];
-    public Guid? EditingId { get; set; }
 
     public ManageChoresModel()
     {
@@ -18,11 +17,10 @@ public class ManageChoresModel : PageModel
         _repository = new ChoreRepository(choreFilePath);
     }
 
-    public async Task OnGetAsync(Guid? editingId = null)
+    public async Task OnGetAsync()
     {
         var chores = await _repository.LoadAsync();
         Chores = chores.OrderBy(c => c.Name).ToList();
-        EditingId = editingId;
     }
 
     public async Task<IActionResult> OnPostAsync(string newName, int newDays)
@@ -49,18 +47,18 @@ public class ManageChoresModel : PageModel
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostEditAsync(Guid choreId, string editName, int editDays)
+    public async Task<IActionResult> OnPostEditAsync(Guid choreId, string editName, int editDays, string? editDescription)
     {
         if (string.IsNullOrWhiteSpace(editName) || editDays <= 0)
         {
             ModelState.AddModelError("", "Invalid chore name or frequency");
-            await OnGetAsync(choreId);
+            await OnGetAsync();
             return Page();
         }
 
         var chores = await _repository.LoadAsync();
         var chore = chores.FirstOrDefault(c => c.Id == choreId);
-        
+
         if (chore == null)
         {
             ModelState.AddModelError("", "Chore not found");
@@ -70,7 +68,8 @@ public class ManageChoresModel : PageModel
 
         chore.Name = editName.Trim();
         chore.Frequency = TimeSpan.FromDays(editDays);
-        
+        chore.Description = editDescription?.Trim();
+
         await _repository.SaveAsync(chores);
 
         return RedirectToPage();
