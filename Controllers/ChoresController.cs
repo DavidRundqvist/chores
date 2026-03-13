@@ -60,7 +60,8 @@ public class ChoresController : ControllerBase
         var chores = await _choreRepository.LoadAsync();
         var records = await _recordRepository.LoadAsync();
 
-        var weekFromNow = DateTime.Now.Date.AddDays(7);
+        var today = DateTime.Now.Date;
+        var weekFromNow = today.AddDays(7);
         var dueChores = new List<DueChoreDto>();
 
         foreach (var chore in chores)
@@ -75,7 +76,7 @@ public class ChoresController : ControllerBase
                     Id = chore.Id,
                     Name = chore.Name,
                     NextDueDate = nextDueDate,
-                    IsOverdue = nextDueDate < weekFromNow
+                    IsOverdue = nextDueDate < today
                 });
             }
         }
